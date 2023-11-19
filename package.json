@@ -1,0 +1,12 @@
+{
+  "name": "threejs-maze-chatgpt",
+  "version": "0.0.1",
+  "license": "MIT",
+  "dependencies": {
+    "cannon-es": "^0.20.0",
+    "three": "^0.158.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

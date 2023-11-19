@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>3D Maze Generation with Orbit Controls</title>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+   import * as THREE from 'three';
+   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+      // Maze dimensions
+      const mazeWidth = 10;
+      const mazeHeight = 10;
+
+      // Initialize Three.js scene
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // Create maze
+      const maze = generateMaze(mazeWidth, mazeHeight);
+
+      // Maze rendering
+      const wallGeometry = new THREE.BoxGeometry(1, 1, 1);
+      const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+      const floorMaterial = new THREE.MeshBasicMaterial({
+        color: 0xaaaaaa,
+      });
+
+      for (let y = 0; y < mazeHeight; y++) {
+        for (let x = 0; x < mazeWidth; x++) {
+          if (maze[y][x] === 1) {
+            const wall = new THREE.Mesh(wallGeometry, wallMaterial);
+            wall.position.set(x, -y, 0);
+            scene.add(wall);
+          } else {
+            const floor = new THREE.Mesh(wallGeometry, floorMaterial);
+            floor.position.set(x, -y, 0);
+            scene.add(floor);
+          }
+        }
+      }
+
+      // OrbitControls setup
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enablePan = false;
+
+      // Camera setup
+      camera.position.set(mazeWidth / 2, -mazeHeight / 2, Math.max(mazeWidth, mazeHeight));
+
+      // Render loop
+      const animate = function () {
+        requestAnimationFrame(animate);
+
+        controls.update(); // Update controls for smooth rotation
+
+        renderer.render(scene, camera);
+      };
+
+      animate();
+
+      // Maze generation function (Recursive Backtracking Algorithm)
+      function generateMaze(width, height) {
+        const maze = Array.from({ length: height }, () =>
+          Array.from({ length: width }, () => (Math.random() > 0.3 ? 1 : 0))
+        );
+
+        return maze;
+      }
+    </script>
+  </body>
+</html>
